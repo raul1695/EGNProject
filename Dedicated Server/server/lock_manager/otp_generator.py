@@ -6,20 +6,17 @@ import time
 def generate_secret():
 	return pyotp.random_base32()
 
-def generate_bulk(total):
+def generate_bulk_fake_data(total):
 	num = 0
 	while num < total:
-		print(f"INSERT INTO main(s) VALUES ('{generate_secret()}');")
+		print(f"""INSERT INTO station VALUES (‘ship_id{str(pyotp.random_base32())}′,
+			station_id{str(pyotp.random_base32())},
+			’berth_num{str(pyotp.random_base32())}’,
+			’waterimg_{str(pyotp.random_base32())}’,
+			’meterimg_{str(pyotp.random_base32())}’, 
+			'before{str(pyotp.random_base32())}', 
+			'after{str(pyotp.random_base32())}s');""")
 		num = num + 1
-
-
-def generate_bulk_water_usage(total):
-	num = 0
-	while num < total:
-		print(f"INSERT INTO main(s) VALUES ('{generate_secret()}', '{ran()}',);")
-		num = num + 1
-
-
 
 def verify( num_id, otp_num, db_path ="/home/larry/Desktop/EGN Project/Dedicated Server/server/special"):
 	try:
@@ -38,11 +35,7 @@ def verify( num_id, otp_num, db_path ="/home/larry/Desktop/EGN Project/Dedicated
 		return False
 
 def main():
-    key  = pyotp.TOTP("UJFUW2N2GEJF4AIN")
-    print("The secret for this session is " + (str(key)))
-    while(True):
-    	print(str(key.now()))
-    	time.sleep(5)
+    generate_bulk_fake_data(30)
 
 if __name__ == "__main__":
     main()

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from . import views
-
+from django.views.decorators.csrf import csrf_exempt
 urlpatterns = [
-    path('<int:num_id>/<int:otp_pass>', views.verify)
+    path('transmit/', csrf_exempt(views.send_req))
 ]

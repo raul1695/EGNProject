@@ -15,8 +15,23 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+
+"""
+
+
+
+LOCK_MANAGER : Handles the locking/unlocking of the water station hardware
+
+PORT_MANAGER : Handles syncronizity of all water station usage (e.i: when a tablet scans a qr code it provides certain information to user)
+
+REQUEST_MANAGER : Handles the Image-related detection. Allows users to recieve images and upload data.
+
+
+
+"""
 from django.urls import path, include
 
 urlpatterns = [
-    path('', include('lock_manager.urls'))
+    path('access/', include('lock_manager.urls')),
+    path('request/', include('request_manager.urls'))
 ]
