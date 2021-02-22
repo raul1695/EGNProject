@@ -1,8 +1,17 @@
 """"
 
-In this document we will draft our sample https request in order to test some functionality.
+This is a sample request used to test the request_manager functionality. 
+this program creates a valid POST request that is then processed by the request_manager module.
 
-in this very directory we also have an example image to use.
+The request includes:
+
+-An Image named exampleimpage.jpg
+-User credentials ('user' and 'token', ship id, berth id, visit timestamp)
+
+The request_manager processes this data, validating the transaction. 
+If it's valid, it returns a copy of the request in json form (this functionality is exclusively for Debugging purposes)
+
+
 
 """
 
@@ -13,14 +22,15 @@ from PIL import Image
 import base64
 import requests
 import json
-
+import time
 
 def main():
 	with open("exampleimage.jpg", "rb") as image:
-		b64string = base64.b64encode(image.read())
-	data = {'user':'wewewe' , 'hassssh' : 'fgfgffggfgf', 'img' : b64string.decode()}
+		img_bytes = image.read()
+	img_in_b64string = base64.b64encode(img_bytes).decode("utf8")
+	data = {'user':'X962325' , 'ship_id' : '145697', 'docking_time': str(time.time()),'img' : img_in_b64string}
 	headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-	r = requests.post('http://127.0.0.1:8000/request/transmit/', data = json.dumps(data), headers = headers)
+	r = requests.post('http://127.0.0.1:8080/request/transmit/', data = json.dumps(data), headers = headers)
 	print(str(r.text))
 
 

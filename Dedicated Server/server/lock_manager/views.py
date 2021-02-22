@@ -2,16 +2,29 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from . import core
-# Create your views here.
 
 
-def verify(request, num_id,otp_pass):
 
-	answer = core.verify(num_id, otp_pass)
+"""
+View that returns the "use" status of the water station
+
+"""
+def access(request, num_id,otp_pass):
+
+	answer = core.change_lock_state(num_id, otp_pass)
 
 	data = {'openLock' : answer,
-			'otp password attempted': otp_pass,
-			'correct_password': core.generate_otp("UJFUW2N2GEJF4AIN")
+			'otp password attempted (Debugging purposes)': otp_pass
+			}
+	
+	return JsonResponse(data)
+
+
+def status(request, num_id):
+
+	answer = core.check_status(num_id)
+
+	data = {'Lock_status' : answer
 			}
 	
 	return JsonResponse(data)

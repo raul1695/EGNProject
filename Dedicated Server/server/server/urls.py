@@ -33,5 +33,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('access/', include('lock_manager.urls')),
-    path('request/', include('request_manager.urls'))
+    path('request/', include('request_manager.urls')),
+    path('schedule/', include('schedule_manager.urls')),
+    path('tx/', include('transaction_manager.urls'))
 ]

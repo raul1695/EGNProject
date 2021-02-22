@@ -1,6 +1,7 @@
 import pyotp
 import sqlite3
-
+import os
+import time
 
 def generate_secret():
 	return pyotp.random_base32()
@@ -15,13 +16,14 @@ def generate_bulk(total):
 		print(f"INSERT INTO main(s) VALUES ('{generate_secret()}');")
 		num = num + 1
 
-def verify( num_id, otp_num, db_path ="/home/larry/Desktop/EGN Project/Dedicated Server/server/special/secrets.sqlite3"):
+def verify( num_id, otp_num):
+	db_path = str(((os.path.split(os.getcwd()))[0]))+ "/server/data/central_db.sqlite3"
 	try:
 		conn = sqlite3.connect(db_path)
 		c = conn.cursor()
 		n_id = (num_id,)
 		otp = (otp_num,)
-		c.execute("SELECT s FROM main WHERE id = ?", n_id)
+		c.execute("SELECT secret FROM lock_manager WHERE id = ?", n_id)
 		secret = str((c.fetchone())[0])
 		print(str(secret))
 		totp = pyotp.TOTP(str(secret))
@@ -29,7 +31,42 @@ def verify( num_id, otp_num, db_path ="/home/larry/Desktop/EGN Project/Dedicated
 		return totp.verify(str(otp_num))
 
 	except Exception as e:
-		return str(e)
+		return str(db_path+ "\n" + "Error mesg: "+ str(e) + "\n")
+
+
+def check_status(num_id):
+	db_path = str(((os.path.split(os.getcwd()))[0]))+ "/server/data/central_db.sqlite3"
+	try:
+		conn = sqlite3.connect(db_path)
+		c = conn.cursor()
+		n_id = (num_id,)
+		c.execute("SELECT lock_status FROM lock_manager WHERE id = ?", n_id)
+		lock_status = int((c.fetchone())[0])
+		if(abs((time.time()*1000) - lock_status) <= 30000):
+			return "Open"
+		else:
+			return "Locked"
+
+	except Exception as e:
+		return str(db_path+ "\n" + "Error mesg: "+ str(e) + "\n")
+
+def change_lock_state(num_id, otp_pass, tx_id = 1):
+	db_path = str(((os.path.split(os.getcwd()))[0]))+ "/server/data/central_db.sqlite3"
+	try:
+		answer = verify(num_id, otp_pass)
+		if(answer == True):
+			lock_status = time.time() * 1000
+			conn = sqlite3.connect(db_path)
+			cursor = conn.cursor()
+			cursor.execute(''' UPDATE lock_manager SET lock_status= "{0}", status = "{1}" WHERE id = {2};'''.format(lock_status,tx_id,num_id))
+			conn.commit()
+			return "Device Unlocked for 30 seconds"
+		else:
+			return "Invalid password. Try Again"
+	except Exception as e:
+		return str(db_path+ "\n" + "Error mesg: "+ str(e) + "\n")	
+
+
 
 
 
