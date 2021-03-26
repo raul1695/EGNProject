@@ -34,6 +34,26 @@ def verify( num_id, otp_num):
 		return str(db_path+ "\n" + "Error mesg: "+ str(e) + "\n")
 
 
+
+def convert_to_dic(cursor):
+	desc = cursor.description
+	column_names = [col[0] for col in desc]
+	data = [dict(zip(column_names, row))  
+	        for row in cursor.fetchall()]
+	return data
+
+
+def get_all_lock():
+	try:
+		db_path = str(((os.path.split(os.getcwd()))[0]))+ "/server/data/central_db.sqlite3"
+		conn = sqlite3.connect(db_path)
+		c = conn.cursor()
+		data = c.execute("SELECT id, status, long, lat, lock_status FROM lock_manager")
+		return convert_to_dic(data)
+	except Exception as e:
+		return str(e)
+
+
 def check_status(num_id):
 	db_path = str(((os.path.split(os.getcwd()))[0]))+ "/server/data/central_db.sqlite3"
 	try:

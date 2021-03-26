@@ -31,5 +31,7 @@ parameters : takes the id of the water station. Returns string "locked"/"unlocke
 
 urlpatterns = [
     path('<int:num_id>/<int:otp_pass>', views.access),
-    path('status/<int:num_id>', views.status)
+    path('status/<int:num_id>', views.status),
+    path('all', views.all)
 ]
+

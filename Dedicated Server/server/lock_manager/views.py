@@ -28,3 +28,8 @@ def status(request, num_id):
 			}
 	
 	return JsonResponse(data)
+
+
+def all(request):
+	data = core.get_all_lock()
+	return JsonResponse(data, safe = False)
