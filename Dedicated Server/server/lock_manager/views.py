@@ -6,7 +6,7 @@ from . import core
 
 
 """
-View that returns the "use" status of the water station
+Views for the api of lock_manager
 
 """
 def access(request, num_id,otp_pass):
